@@ -42,33 +42,52 @@
 
 // instantiate timer vars
 
-	var minutes = 1;
-	
 	var counting = false;
 	var count;
 	var inter;	
 	var paused = false;
-    var d = new Date(0, 0, 0, 0, 0, 0);	
+    var d = new Date(0, 0, 0, 0, 0, 0);
+    
+// colors
+
+	var colors = {
+		'default' 	: '#ccc',
+		'on'		: 'green',
+		'done'		: 'orange'
+	}
+	
+	var settings = {
+		'time'		: 25
+	}    
     
 // timer helper funcs
-    	
-	function reset_timer() {
-		count = minutes * 60 * 1000;
+
+    timer = {};
+    
+	timer.minutes = settings.time;
+	
+	timer.colors = colors;
+	
+	timer.id = "#time";
+    
+	timer.reset = function() {
+		count = this.minutes * 60 * 1000;
 		clearInterval(inter);
 		counting = false;	
 		paused = false;
-	    set_time();				
-		color();
-		display_time(minutes);
+	    set_time();	
+	    //console.log(this);
+		this.color();
+		display_time(this.minutes);
 	}    
     
     function set_time() {
 		d.setTime(count);    
     }
     
-    function color(col) {
-    	if (!col) col = "#ccc";
-		$('#time').css('background-color', col);    
+    timer.color = function(col) {
+    	if (!col) col = this.colors.default;
+		$(this.id).css('background-color', col);    
     }
     	
 	function display_time(min, sec) {
@@ -78,36 +97,40 @@
 		if (sec.toString().length == 1) {
 			sec = ("0" + sec);
 		}
-		$('#time').text(min + ":" + sec );
+		$(timer.id).text(min + ":" + sec);
 	}    
 	
-	function toggle_start() {		
-		$('#footer').fadeOut();	
-		if (counting) {		
-			if (paused) {
-				start_timer();
-			} else {
-				pause_timer();
-			}								
-		} else {			
-			start_timer();							
-		}		
+	timer.toggle = function () {
+		if (count > 0) {
+			$('#footer').fadeOut();				
+			if (counting) {		
+				if (paused) {
+					this.start();
+				} else {
+					this.pause();
+				}								
+			} else {			
+				this.start();							
+			}		
+		} else {
+			this.reset();	
+		}
 	}
     
-    function start_timer() {
+    timer.start = function () {
     	counting = true;
 		paused = false;    	
-    	color('green');    	
- 		inter = setInterval(dec_counter, 1000);
+    	this.color(this.colors.on);    	
+ 		inter = setInterval(timer.dec_counter.bind(timer), 1000);
     }
     
-    function pause_timer() {
-		color();
+    timer.pause = function () {
+		this.color();
 		paused = true;
 		clearInterval(inter);    
     }
 
-    function dec_counter(t) {
+    timer.dec_counter = function () {
         if (count > 0) {
 			count -= 1000;
 	        set_time();
@@ -115,7 +138,9 @@
 	    	// console.log(d);  
         } else {
             clearInterval(inter);
-            callback();
+            this.color(this.colors.done);
+            counting = false;
+            paused = false;
         }
     }
 	
@@ -123,8 +148,7 @@
 	
 	$(document).ready(function() {
 	
-		reset_timer();	
-						
-		$('#time').single_double_click(toggle_start, reset_timer, 200);
+		timer.reset();						
+		$(timer.id).single_double_click(timer.toggle.bind(timer), timer.reset.bind(timer), 200);
 	
 	});
