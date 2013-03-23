@@ -39,16 +39,8 @@
 	    });
 	  });
 	}	
-
-// instantiate timer vars
-
-	var counting = false;
-	var count;
-	var inter;	
-	var paused = false;
-    var d = new Date(0, 0, 0, 0, 0, 0);
     
-// colors
+// session config
 
 	var colors = {
 		'default' 	: '#ccc',
@@ -60,95 +52,96 @@
 		'time'		: 25
 	}    
     
-// timer helper funcs
+// define timer
 
-    timer = {};
+	// constructor func
+    Timer = function(id) {
     
-	timer.minutes = settings.time;
-	
-	timer.colors = colors;
-	
-	timer.id = "#time";
-    
-	timer.reset = function() {
-		count = this.minutes * 60 * 1000;
-		clearInterval(inter);
-		counting = false;	
-		paused = false;
-	    set_time();	
-	    //console.log(this);
-		this.color();
-		display_time(this.minutes);
-	}    
-    
-    function set_time() {
-		d.setTime(count);    
-    }
-    
-    timer.color = function(col) {
-    	if (!col) col = this.colors.default;
-		$(this.id).css('background-color', col);    
-    }
-    	
-	function display_time(min, sec) {
-		if (!sec) {
-			sec = "00";
+		this.id = id;
+		this.minutes = settings.time;	
+		this.colors = colors;
+		
+		this.counting = false;
+		this.paused = false;
+		this.d = new Date(0, 0, 0, 0, 0, 0);
+		    
+		this.reset = function () {
+			this.count = this.minutes * 60 * 1000;
+			clearInterval(this.inter);
+			this.counting = false;	
+			this.paused = false;
+		    this.d.setTime(this.count);
+			this.color();
+			this.display(this.minutes);
+		}.bind(this);
+		
+	    this.color = function (col) {
+	    	if (!col) col = this.colors.default;
+			$(this.id).css('background-color', col);    
+	    }   
+		
+		this.display = function (min, sec) {
+			if (!sec) {
+				sec = "00";
+			}
+			if (sec.toString().length == 1) {
+				sec = ("0" + sec);
+			}
+			$(this.id).text(min + ":" + sec);
 		}
-		if (sec.toString().length == 1) {
-			sec = ("0" + sec);
-		}
-		$(timer.id).text(min + ":" + sec);
-	}    
+		
+		this.toggle = function () {
+			if (this.count > 0) {
+				$('#footer').fadeOut();				
+				if (this.counting) {		
+					if (this.paused) {
+						this.start();
+					} else {
+						this.pause();
+					}								
+				} else {			
+					this.start();							
+				}		
+			} else {
+				this.reset();	
+			}
+		}.bind(this);
+	    
+	    this.start = function () {
+	    	this.counting = true;
+			this.paused = false;    	
+	    	this.color(this.colors.on);    	
+	 		this.inter = setInterval(this.dec_counter.bind(this), 1000);
+	    }
+	    
+	    this.pause = function () {
+			this.color();
+			this.paused = true;
+			clearInterval(this.inter);    
+	    }
 	
-	timer.toggle = function () {
-		if (count > 0) {
-			$('#footer').fadeOut();				
-			if (counting) {		
-				if (paused) {
-					this.start();
-				} else {
-					this.pause();
-				}								
-			} else {			
-				this.start();							
-			}		
-		} else {
-			this.reset();	
-		}
-	}
-    
-    timer.start = function () {
-    	counting = true;
-		paused = false;    	
-    	this.color(this.colors.on);    	
- 		inter = setInterval(timer.dec_counter.bind(timer), 1000);
+	    this.dec_counter = function () {
+	        if (this.count > 0) {
+				this.count -= 1000;
+		        this.d.setTime(this.count);
+		        this.display(this.d.getMinutes(), this.d.getSeconds());            
+		    	// console.log(d);  
+	        } else {
+	            clearInterval(this.inter);
+	            this.color(this.colors.done);
+	            this.counting = false;
+	            this.paused = false;
+	        }
+	    }    	
     }
     
-    timer.pause = function () {
-		this.color();
-		paused = true;
-		clearInterval(inter);    
-    }
-
-    timer.dec_counter = function () {
-        if (count > 0) {
-			count -= 1000;
-	        set_time();
-	        display_time(d.getMinutes(), d.getSeconds());            
-	    	// console.log(d);  
-        } else {
-            clearInterval(inter);
-            this.color(this.colors.done);
-            counting = false;
-            paused = false;
-        }
-    }
-	
-// build timer	
+    timer = new Timer('#time');
+    
+// launch page	
 	
 	$(document).ready(function() {
 	
 		timer.reset();						
-		$(timer.id).single_double_click(timer.toggle.bind(timer), timer.reset.bind(timer), 200);
+		$(timer.id).single_double_click(timer.toggle, timer.reset, 300);
 	
 	});
