@@ -21,7 +21,7 @@
 	// Source:  http://gist.github.com/399624
 	// License: MIT
 	 
-	jQuery.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {
+	jQuery.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {	
 	  return this.each(function(){
 	    var clicks = 0, self = this;
 	    jQuery(this).click(function(event){
@@ -49,7 +49,7 @@
 	}
 	
 	var settings = {
-		'time'		: 25
+		'duration'	: 25	// in minutes
 	}    
     
 // define timer
@@ -58,21 +58,20 @@
     Timer = function(id) {
     
 		this.id = id;
-		this.minutes = settings.time;	
+		this.duration = settings.duration;	
 		this.colors = colors;
 		
-		this.counting = false;
 		this.paused = false;
-		this.d = new Date(0, 0, 0, 0, 0, 0);
-		    
+		
+		this.durationMS = this.duration * 60 * 1000;
+		this.dateObj = new Date(0, 0, 0, 0, 0, 0);
+		
 		this.reset = function () {
-			this.count = this.minutes * 60 * 1000;
 			clearInterval(this.inter);
-			this.counting = false;	
+			this.countMS = this.durationMS;
 			this.paused = false;
-		    this.d.setTime(this.count);
 			this.color();
-			this.display(this.minutes);
+			this.display(this.duration);
 		}.bind(this);
 		
 	    this.color = function (col) {
@@ -80,7 +79,10 @@
 			$(this.id).css('background-color', col);    
 	    }   
 		
-		this.display = function (min, sec) {
+		this.display = function () {
+			this.dateObj.setTime(this.countMS);
+			var min = this.dateObj.getMinutes();
+			var sec = this.dateObj.getSeconds();
 			if (!sec) {
 				sec = "00";
 			}
@@ -91,9 +93,9 @@
 		}
 		
 		this.toggle = function () {
-			if (this.count > 0) {
-				$('#footer').fadeOut();				
-				if (this.counting) {		
+			if (this.countMS > 0) {
+				$('#footer').fadeOut();	
+				if (this.countMS < this.durationMS) {		
 					if (this.paused) {
 						this.start();
 					} else {
@@ -108,7 +110,6 @@
 		}.bind(this);
 	    
 	    this.start = function () {
-	    	this.counting = true;
 			this.paused = false;    	
 	    	this.color(this.colors.on);    	
 	 		this.inter = setInterval(this.dec_counter.bind(this), 1000);
@@ -121,27 +122,44 @@
 	    }
 	
 	    this.dec_counter = function () {
-	        if (this.count > 0) {
-				this.count -= 1000;
-		        this.d.setTime(this.count);
-		        this.display(this.d.getMinutes(), this.d.getSeconds());            
-		    	// console.log(d);  
+	        if (this.countMS > 0) {
+				this.countMS -= 1000;
+		        this.display();
+		        store.set('timer', { id: this.id, countMS : this.countMS, paused : this.paused })
+		        // store.set(this.id, this.countMS);            
 	        } else {
-	            clearInterval(this.inter);
-	            this.color(this.colors.done);
-	            this.counting = false;
-	            this.paused = false;
+				this.stop();
 	        }
-	    }    	
+	    }
+	    
+	    this.stop = function() {
+	        this.color(this.colors.done);
+	        this.paused = false;
+	   		clearInterval(this.inter);
+	   		store.remove('timer');
+	    }   
+	    
+	    this.resume = function(timer_obj) {
+	    	this.countMS = timer_obj.countMS;
+	    	this.paused = timer_obj.paused;
+			this.display();
+	    	this.start();
+	    }
+	    	    	
     }
-    
-    timer = new Timer('#time');
     
 // launch page	
 	
+    timer = new Timer('#time');
+    
 	$(document).ready(function() {
 	
-		timer.reset();						
+		if (store.get('timer')) {
+			timer.resume(store.get('timer'));	
+		} else {
+			timer.reset();
+		}					
+		
 		$(timer.id).single_double_click(timer.toggle, timer.reset, 300);
-	
+			
 	});
