@@ -8,4 +8,4 @@ A web pomodoro timer.
 - Click again to pause
 - Double click to reset
 
-Questions / Requests? d@dylanized.com
+Questions / Requests? d@dylanized.com  
