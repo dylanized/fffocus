@@ -1,0 +1,75 @@
+* {
+ margin : 0;
+ padding : 0;
+}
+
+body {
+	background-color : #fff;
+	padding : 5.5% 0 0 0;
+	text-align : center;
+	font-family : 'Open Sans', Helvetica, Arial;
+	color : #151515;
+}
+
+h1 {
+	margin : 0 auto 60px auto;
+	letter-spacing : -4px;
+	font-weight : bold;
+	font-size : 55px;
+	text-align : center;
+	width : 100%;
+	outline : none;
+	letter-spacing : .75px;
+	width : 70%;
+	padding : 10px;
+}
+
+p { color : #ccc; font-size : 28px; text-align : center; width : 100%; margin-top : 100px; }
+
+a:link,
+a:visited { color : #999; text-decoration : none;}
+a:hover,
+a:active {  color : #666; }
+
+canvas {
+	margin : 0 auto 0 auto;
+}
+
+#time {
+	font-size : 50px;
+	background-color : #ccc;
+	border-radius: 50%;
+	width: 200px;
+	height: 200px;
+	color : #fff;
+	margin : 0 auto 0 auto;
+	line-height : 200px;
+	-moz-user-select: transparent;
+	-webkit-user-select: transparent;	
+	user-selct : transparent;
+	cursor : pointer;
+}
+
+#time {
+	transition: background-color 1s;
+	-moz-transition: background-color 1s; /* Firefox 4 */
+	-webkit-transition: background-color 1s; /* Safari and Chrome */
+	-o-transition: background-color 1s; /* Opera */
+}
+
+#footer {
+	position : absolute;
+	bottom : 13px;
+	font-size : 14px;
+	color : #ccc;
+	text-decoration : none;	
+	text-align : center;
+	display : block;
+	width : 100%;
+}
+
+#footer:hover,
+#foooter:active {
+	text-decoration : none;
+	color : green;
+}
