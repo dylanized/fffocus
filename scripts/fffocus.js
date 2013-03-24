@@ -95,6 +95,7 @@
 			if (new_duration) this.durationMS = new_duration;
 			this.countMS = this.durationMS;
 			this.task(defaults.task);
+			$('#task').blur();
 			$('footer').fadeIn();
 			this.update("off");
 		}
@@ -135,6 +136,7 @@
 	        }
 	    }
 	    
+	    // save to local store
 	    this.save = function () {
 	    	var settings = {
 	    		task : this.task(),
@@ -164,16 +166,18 @@
 	    		
 	    // single click handler
 		this.toggle = function () {
+			$('#task').blur();
 			$('footer').fadeOut();
+			console.log('toggle started');
 			if (this.status == "done") {
 				this.reset();
 			} else if (this.status == "on") {
 				this.update('paused');
 			} else {
-				// if the task is not set, ask for it			
+				// if the task is not set, ask for it	
 				if (this.status == "off" && this.task() == defaults.task) {
 					if (new_task = prompt(defaults.task, "")) {
-						if (new_task != "") this.task(new_task);
+						if (new_task.length > 0) this.task(new_task);
 					}
 				}
 				// start the timer
@@ -196,6 +200,7 @@
 	    // cache this for jquery actions
 	    var self = this;
 
+		// editable task behavior
 		$('#task').focus(function() {
 			if (self.task() == defaults.task) self.task('');
 		}).keyup(function() {
@@ -212,14 +217,14 @@
 	    	this.reset();
 	    }
 	    
+	    // secret buttons
 		$('#color').click(function() {
 			if (new_color = prompt("Set the timer color:", "green")) {
 				colors['on'] = new_color;
 				store.set('color', new_color);
 				self.update();
 	    	}
-		});		
-	
+		});			
 		$('#clear').click(function() {
 			console.log('clearing');
 			store.clear();
