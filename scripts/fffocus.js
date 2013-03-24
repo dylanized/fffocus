@@ -93,6 +93,7 @@
 		this.reset = function (new_duration) {
 			if (new_duration) this.durationMS = new_duration;
 			this.countMS = this.durationMS;
+			this.task(default_settings.task);
 			this.update("off");
 		}
 		
