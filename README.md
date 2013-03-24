@@ -21,4 +21,6 @@ This is just a static html page with object-oriented Javascript, using Knockout.
 
 Happy fffocusing!
 
-Questions / Requests? d@dylanized.com  
+Questions / Requests? d@dylanized.com
+
+Follow me: http://twitter.com/dylanized 
