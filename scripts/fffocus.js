@@ -43,12 +43,13 @@
 // session config
 
 	var colors = {
-		'default' 	: '#ccc',
+		'off' 		: '#ccc',
 		'on'		: 'green',
+		'paused'	: '#ccc',
 		'done'		: 'orange'
 	}
 	
-	var settings = {
+	var default_settings = {
 		'duration'	: 25	// in minutes
 	}    
     
@@ -57,27 +58,27 @@
 	// constructor func
     Timer = function(id) {
     
+	    // resume from local store
+		if (store.get(id)) {
+			var store_obj = store.get(id);
+	    	this.countMS = store_obj.countMS;
+	    	this.status = store_obj.status;			
+ 			this.durationMS = store_obj.durationMS;
+		} else {
+			this.durationMS = ( default_settings.duration * 60 * 1000 );
+		}
+    
 		this.id = id;
-		this.duration = settings.duration;	
-		this.colors = colors;
 		
-		this.paused = false;
-		
-		this.durationMS = this.duration * 60 * 1000;
+		this.selector = "#" + this.id;		
 		this.dateObj = new Date(0, 0, 0, 0, 0, 0);
 		
 		this.reset = function () {
 			clearInterval(this.inter);
 			this.countMS = this.durationMS;
-			this.paused = false;
-			this.color();
+			this.update_status("off");
 			this.display(this.duration);
 		}.bind(this);
-		
-	    this.color = function (col) {
-	    	if (!col) col = this.colors.default;
-			$(this.id).css('background-color', col);    
-	    }   
 		
 		this.display = function () {
 			this.dateObj.setTime(this.countMS);
@@ -89,14 +90,14 @@
 			if (sec.toString().length == 1) {
 				sec = ("0" + sec);
 			}
-			$(this.id).text(min + ":" + sec);
+			$(this.selector).text(min + ":" + sec);
 		}
 		
 		this.toggle = function () {
 			if (this.countMS > 0) {
 				$('#footer').fadeOut();	
 				if (this.countMS < this.durationMS) {		
-					if (this.paused) {
+					if (this.status == 'paused') {
 						this.start();
 					} else {
 						this.pause();
@@ -108,16 +109,20 @@
 				this.reset();	
 			}
 		}.bind(this);
+		
+		this.update_status = function (status) {
+			this.status = status;
+			$(this.selector).css('background-color', colors[status]);    	      
+			this.save();
+		}
 	    
 	    this.start = function () {
-			this.paused = false;    	
-	    	this.color(this.colors.on);    	
+			this.update_status('on');    	
 	 		this.inter = setInterval(this.dec_counter.bind(this), 1000);
 	    }
 	    
 	    this.pause = function () {
-			this.color();
-			this.paused = true;
+			this.update_status('paused');
 			clearInterval(this.inter);    
 	    }
 	
@@ -125,41 +130,34 @@
 	        if (this.countMS > 0) {
 				this.countMS -= 1000;
 		        this.display();
-		        store.set('timer', { id: this.id, countMS : this.countMS, paused : this.paused })
-		        // store.set(this.id, this.countMS);            
+		        this.save();
 	        } else {
-				this.stop();
+				this.done();
 	        }
 	    }
 	    
-	    this.stop = function() {
-	        this.color(this.colors.done);
-	        this.paused = false;
-	   		clearInterval(this.inter);
-	   		store.remove('timer');
-	    }   
-	    
-	    this.resume = function(timer_obj) {
-	    	this.countMS = timer_obj.countMS;
-	    	this.paused = timer_obj.paused;
-			this.display();
-	    	this.start();
+	    this.save = function () {
+	    	store.set(this.id, { countMS : this.countMS, status : this.status, durationMS : this.durationMS });
 	    }
-	    	    	
+	    
+	    this.done = function() {
+	        this.update_status('done');
+	   		clearInterval(this.inter);
+	    }	
+	    
+		if (store_obj) {
+			this.display();
+	    	if (this.status == "on") this.start();
+	    } else {
+	    	this.reset();
+	    }
+	    
+	    $(this.selector).single_double_click(this.toggle, this.reset, 300);
+
     }
     
-// launch page	
-	
-    timer = new Timer('#time');
-    
-	$(document).ready(function() {
-	
-		if (store.get('timer')) {
-			timer.resume(store.get('timer'));	
-		} else {
-			timer.reset();
-		}					
-		
-		$(timer.id).single_double_click(timer.toggle, timer.reset, 300);
-			
+// launch page
+
+	$(document).ready(function() {		
+	    timer = new Timer('time');		
 	});
