@@ -94,6 +94,7 @@
 			if (new_duration) this.durationMS = new_duration;
 			this.countMS = this.durationMS;
 			this.task(default_settings.task);
+			$('footer').fadeIn();
 			this.update("off");
 		}
 		
