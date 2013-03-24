@@ -10,7 +10,7 @@ This is a minimalist pomodoro timer. Here's how it works:
 - Click again to pause the timer, or double click to reset it
 - If you navigate away from the page and come back, it will keep track of the elapsed time
 
-You can set fffocus.com as your browser homepage, and have a constant reminder to stay on task.
+If you set fffocus.com as your browser homepage, then it can serve as a consistent reminder to stay on task. Just a simple pattern interrupt to encourage a little mindfulness :)
 
 More configuration options too:
 
