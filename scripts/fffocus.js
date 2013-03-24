@@ -225,6 +225,7 @@
 	    	}
 		});			
 		$('#clear').click(function() {
+			self.reset();
 			store.clear();
 		});		
 
