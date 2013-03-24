@@ -61,10 +61,14 @@
     
 	    // resume from local store
 		if (store.get(id)) {
-			var store_obj = store.get(id);
-	    	this.countMS = store_obj.countMS;
+			var store_obj = store.get(id);	    	
 	    	this.status = store_obj.status;			
  			this.durationMS = store_obj.durationMS;
+ 			if (store_obj.countMS == 0) {
+ 				this.countMS = this.durationMS;	
+ 			} else {
+ 				this.countMS = store_obj.countMS;
+ 			}
  			task = store_obj.task;
 		} else {
 			this.durationMS = default_settings.duration * 60 * 1000;
@@ -72,19 +76,14 @@
 		}
     
 		this.id = id;
-		
-		/*this.fullName = ko.computed(function() {
-        	return this.firstName() + " " + this.lastName();
-	    }, this);*/
     
 	    this.task = ko.observable(task);
 	    		
 		this.selector = "#" + this.id;		
 		this.dateObj = new Date(0, 0, 0, 0, 0, 0);
 		
-		this.dateObj.setTime(this.durationMS);
-		
-		this.reset = function () {
+		this.reset = function (new_duration) {
+			if (new_duration) this.durationMS = new_duration;
 			clearInterval(this.inter);
 			this.countMS = this.durationMS;
 			this.update_status("off");
@@ -102,10 +101,7 @@
 				sec = ("0" + sec);
 			}
 			$(this.selector).text(min + ":" + sec);
-		}
-		
-		this.min = ko.observable(this.dateObj.getMinutes());
-		this.sec = ko.observable(this.dateObj.getSeconds());
+		}	
 		
 		this.toggle = function () {
 			if (this.countMS > 0) {
@@ -175,8 +171,16 @@
 	    // time edit
 	    this.edit = function () {
 	    	// ask user for time
-	    	// intrepret time and set countMS
-	    	console.log('edit');
+	    	var new_time = prompt("Set the timer duration:", "25:00");
+			// validate the input and reset the clock
+	    	var min_sec = new_time.split(":");
+	    	if (!isNaN(min_sec[0])) {
+	    		new_duration = min_sec[0] * 60 * 1000;
+	    		if (!isNaN(min_sec[1])) {
+	    			new_duration += min_sec[1] * 1000;
+	    		}
+	    		this.reset(new_duration);
+	    	}
 	    }	    
 	    
 	    // dbl click handler
