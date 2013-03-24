@@ -67,7 +67,11 @@
  			if (store_obj.countMS == 0) {
  				this.countMS = this.durationMS;	
  			} else {
- 				this.countMS = store_obj.countMS;
+ 				var elapsed_time = Date.now() - store_obj.systemTime;
+ 				this.countMS = store_obj.countMS -  elapsed_time;
+ 				if (this.countMS < 0) {
+ 					this.countMS = this.durationMS;
+ 				}
  			}
  			task = store_obj.task;
 		} else {
@@ -151,7 +155,8 @@
 	    		task : this.task(),
 	    		countMS : this.countMS,
 	    		status : this.status,
-	    		durationMS : this.durationMS
+	    		durationMS : this.durationMS,
+				systemTime : Date.now()	    		
 	    	}
 	    	store.set(this.id, settings);
 	    }
