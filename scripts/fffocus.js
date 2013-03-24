@@ -167,12 +167,17 @@
 	    	this.reset();
 	    }
 	    
-	    var self = this;
-	    
 	    jQuery(this.selector).single_double_click(this.toggle, this.reset, 300);
+	    
+	    var self = this;
+
+		jQuery('#task').keyup(function() {
+			self.save();
+		});  
+
 		jQuery('#task').blur(function() {
 			if (self.task() == "") self.task(default_settings.task);
-		});   
+		});
 	    
 	    this.new_duration = ko.observable(25);
 
@@ -190,4 +195,3 @@
 		});	 
 			    		
 	});		
-			
