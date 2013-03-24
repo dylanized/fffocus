@@ -58,25 +58,28 @@
 
 	// constructor func
     Timer = function(id) {
-    
-	    // resume from local store
+    	    
 		if (store.get(id)) {
+			// resume from local store
 			var store_obj = store.get(id);	    	
-	    	this.status = store_obj.status;			
+	    	this.status = store_obj.status;
  			this.durationMS = store_obj.durationMS;
- 			if (store_obj.countMS == 0) {
- 				this.countMS = this.durationMS;	
- 			} else {
- 				var elapsed_time = Date.now() - store_obj.systemTime;
- 				this.countMS = store_obj.countMS -  elapsed_time;
- 				if (this.countMS < 0) {
- 					this.countMS = this.durationMS;
+ 			var task = store_obj.task; 			
+    		// if it was running, subtract elabsed time
+	    	if (this.status == 'on') {
+	    		var elapsed_time = Date.now() - store_obj.systemTime;
+	    		this.countMS = store_obj.countMS - elapsed_time;
+	    		if (this.countMS <= 0) {
+	    			this.countMS = 0;
+ 					this.status = done;
  				}
- 			}
- 			task = store_obj.task;
+	    	} else {
+	    		this.countMS = store_obj.countMS;
+	    	}    		    				
 		} else {
+			// brand new thang
 			this.durationMS = default_settings.duration * 60 * 1000;
- 			task = default_settings.task;			
+ 			var task = default_settings.task;			
 		}
     
 		this.id = id;
@@ -109,7 +112,7 @@
 		
 		this.toggle = function () {
 			if (this.countMS > 0) {
-				$('#footer').fadeOut();	
+				$('footer').fadeOut();	
 				if (this.countMS < this.durationMS) {		
 					if (this.status == 'paused') {
 						this.start();
@@ -125,8 +128,8 @@
 		}.bind(this);
 		
 		this.update_status = function (status) {
-			this.status = status;
-			$(this.selector).css('background-color', colors[status]);    	      
+			if (status) this.status = status;			
+			$(this.selector).css('background-color', colors[this.status]);    	      
 			this.save();
 		}
 	    
@@ -139,7 +142,8 @@
 			this.update_status('paused');
 			clearInterval(this.inter);    
 	    }
-	
+
+		// decrement the counter by 1 second	
 	    this.dec_counter = function () {
 	        if (this.countMS > 0) {
 				this.countMS -= 1000;
@@ -197,8 +201,10 @@
 	    	}
 	    }.bind(this);
 	    
+	    // bind custom function
 	    $(this.selector).single_double_click(this.toggle, this.dbl, 300);
 	    
+	    // cache this for jquery actions
 	    var self = this;
 
 		$('#task').keyup(function() {
@@ -209,12 +215,12 @@
 			if (self.task() == "") self.task(default_settings.task);
 			self.save();
 		});
-	    
-	    this.new_duration = ko.observable(25);
+		
+		this.update_status();
 
     }
     
-// launch page
+// launch timer
 
 	jQuery(document).ready(function() {    
 	

@@ -11,6 +11,8 @@ body {
 	color : #151515;
 }
 
+h1, h2 { position : absolute; left : -9999px; }
+
 #task {
 	margin : 0 auto .5em auto;
 	font-weight : normal;
