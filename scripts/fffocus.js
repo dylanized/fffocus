@@ -191,9 +191,7 @@
 
 		$('#task').keyup(function() {
 			self.save();
-		});  
-
-		$('#task').blur(function() {
+		}).blur(function() {
 			if (self.task() == "") self.task(default_settings.task);
 			self.save();
 		});
