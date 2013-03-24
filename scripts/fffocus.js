@@ -121,7 +121,7 @@
 		}
 		
 		this.display = function () {
-			$(this.selector).text(moment(this.countMS).format('mm:ss'));
+			$(this.selector).text(moment(this.countMS).format('m:ss'));
 		}			
 		
 		// decrement the counter by 1 second	
