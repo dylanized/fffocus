@@ -86,9 +86,20 @@ foooter a:active {
 	color : green;
 }
 
-#debug {
+.control {
 	position : absolute;
-	left : 0;
-	bottom : 0;
+	left : 1em;
+	bottom : 1.5em;
 	color : #fff;
+	display : inline-block;
+	font-size : 1.2em;
+}
+
+.control:hover {
+	color : #ccc;
+}
+
+#clear {
+	left : auto;
+	right : 1em;
 }

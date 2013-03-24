@@ -7,6 +7,10 @@
 		done		: 'orange'
 	}
 	
+	if (store.get('color')) {
+		colors.on = store.get('color');
+	}
+	
 	var default_settings = {
 		duration	: 25,	// in minutes
 		task		: "what are you doing?"
@@ -58,13 +62,13 @@
 		// main controller function
 		this.update_status = function (status) {
 			if (status) this.status = status;
-			console.log("pre: " + this.inter);
 			if (this.status == "on") {
 				if (this.inter == false) this.inter = setInterval(this.dec_counter.bind(this), 1000);
 			} else {
 				clearInterval(this.inter);
 				this.inter = false;
 			}
+			console.log(colors[this.status]);
 			$(this.selector).css('background-color', colors[this.status]);    	      
 			this.display();
 			this.save();
@@ -152,18 +156,24 @@
 	    } else {
 	    	this.reset();
 	    }
+	    
+		$('#color').click(function() {
+			if (new_color = prompt("Set the timer color:", "green")) {
+				colors['on'] = new_color;
+				store.set('color', new_color);
+				self.update_status();
+	    	}
+		});		
+	
+		$('#clear').click(function() {
+			console.log('clearing');
+			store.clear();
+		});		
 
     }
     
 // launch timer
 
-	jQuery(document).ready(function() {    
-	
-	    ko.applyBindings(new Timer('time'));	    
-	
-		$('#debug').click(function() {
-			console.log('clearing');
-			store.clear();
-		});	 
-			    		
+	jQuery(document).ready(function() {    	
+	    ko.applyBindings(new Timer('time'));			    		
 	});		
