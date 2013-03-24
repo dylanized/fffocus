@@ -72,6 +72,11 @@
 		}
     
 		this.id = id;
+		
+		/*this.fullName = ko.computed(function() {
+        	return this.firstName() + " " + this.lastName();
+	    }, this);*/
+    
 	    this.task = ko.observable(task);
 	    		
 		this.selector = "#" + this.id;		
@@ -162,8 +167,13 @@
 	    	this.reset();
 	    }
 	    
+	    var self = this;
+	    
 	    jQuery(this.selector).single_double_click(this.toggle, this.reset, 300);
-
+		jQuery('#task').blur(function() {
+			if (self.task() == "") self.task(default_settings.task);
+		});   
+	    
 	    this.new_duration = ko.observable(25);
 
     }
@@ -177,7 +187,7 @@
 		$('#debug').click(function() {
 			console.log('clearing');
 			store.clear();
-		});	    
-	    		
+		});	 
+			    		
 	});		
 			

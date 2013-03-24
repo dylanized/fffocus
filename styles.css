@@ -11,7 +11,7 @@ body {
 	color : #151515;
 }
 
-h1 {
+#task {
 	margin : 0 auto 60px auto;
 	letter-spacing : -4px;
 	font-weight : bold;
@@ -22,6 +22,8 @@ h1 {
 	letter-spacing : .75px;
 	width : 70%;
 	padding : 10px;
+	border : none;
+	outline : none;
 }
 
 p { color : #ccc; font-size : 28px; text-align : center; width : 100%; margin-top : 100px; }
