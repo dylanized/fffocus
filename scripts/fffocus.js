@@ -43,16 +43,17 @@
 // session config
 
 	var colors = {
-		'off' 		: '#ccc',
-		'on'		: 'green',
-		'paused'	: '#ccc',
-		'done'		: 'orange'
+		off 		: '#ccc',
+		on			: 'green',
+		paused		: '#ccc',
+		done		: 'orange'
 	}
 	
 	var default_settings = {
-		'duration'	: 25	// in minutes
-	}    
-    
+		duration	: 25,	// in minutes
+		task		: "what are you doing?"
+	} 
+	
 // define timer
 
 	// constructor func
@@ -64,12 +65,15 @@
 	    	this.countMS = store_obj.countMS;
 	    	this.status = store_obj.status;			
  			this.durationMS = store_obj.durationMS;
+ 			task = store_obj.task;
 		} else {
-			this.durationMS = ( default_settings.duration * 60 * 1000 );
+			this.durationMS = default_settings.duration * 60 * 1000;
+ 			task = default_settings.task;			
 		}
     
 		this.id = id;
-		
+	    this.task = ko.observable(task);
+	    		
 		this.selector = "#" + this.id;		
 		this.dateObj = new Date(0, 0, 0, 0, 0, 0);
 		
@@ -137,7 +141,13 @@
 	    }
 	    
 	    this.save = function () {
-	    	store.set(this.id, { countMS : this.countMS, status : this.status, durationMS : this.durationMS });
+	    	var settings = {
+	    		task : this.task(),
+	    		countMS : this.countMS,
+	    		status : this.status,
+	    		durationMS : this.durationMS
+	    	}
+	    	store.set(this.id, settings);
 	    }
 	    
 	    this.done = function() {
@@ -152,16 +162,22 @@
 	    	this.reset();
 	    }
 	    
-	    $(this.selector).single_double_click(this.toggle, this.reset, 300);
-	    
-	    this.task = ko.observable('what are you doing?');
+	    jQuery(this.selector).single_double_click(this.toggle, this.reset, 300);
+
 	    this.new_duration = ko.observable(25);
 
     }
     
 // launch page
 
-	$(document).ready(function() {		
-	    timer = new Timer('time');		
+	$(document).ready(function() {    
+	
+	    ko.applyBindings(new Timer('time'));	    
+	
+		$('#debug').click(function() {
+			console.log('clearing');
+			store.clear();
+		});	    
+	    		
 	});		
 			

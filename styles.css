@@ -73,3 +73,10 @@ canvas {
 	text-decoration : none;
 	color : green;
 }
+
+#debug {
+	position : absolute;
+	left : 0;
+	bottom : 0;
+	color : #fff;
+}

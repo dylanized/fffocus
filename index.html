@@ -9,12 +9,12 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="scripts/store.min.js"></script>		
 	<script type="text/javascript" src="scripts/knockout-2.2.1.js"></script>		
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+	<!--<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />-->
 
 </head>
 <body>
 
-	<h1 id="editable" contenteditable="true">what are you working on?</h1>
+	<input id="editable" data-bind='value: task, valueUpdate: "afterkeydown"' value="" />
 	
 	<h6 id="time" class="noSelect"><span></span></h6>
 
@@ -22,6 +22,8 @@
 	<script type="text/javascript" src="scripts/Chart.js"></script>
 	
 	<a id="footer" href="http://github.com/dylanized/fffocus">by @dylanized</a>
+	
+	<div id="debug">debug</div>
 
 </body>
 </html>
