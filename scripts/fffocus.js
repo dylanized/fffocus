@@ -91,11 +91,27 @@
 		
 		this.reset = function (new_duration) {
 			if (new_duration) this.durationMS = new_duration;
-			clearInterval(this.inter);
 			this.countMS = this.durationMS;
 			this.update_status("off");
-			this.display(this.duration);
-		}.bind(this);
+		}
+		
+		// interval timer
+		this.inter = false;
+		
+		// main controller function
+		this.update_status = function (status) {
+			if (status) this.status = status;
+			console.log("pre: " + this.inter);
+			if (this.status == "on") {
+				if (this.inter == false) this.inter = setInterval(this.dec_counter.bind(this), 1000);
+			} else {
+				clearInterval(this.inter);
+				this.inter = false;
+			}
+			$(this.selector).css('background-color', colors[this.status]);    	      
+			this.display();
+			this.save();
+		}
 		
 		this.display = function () {
 			this.dateObj.setTime(this.countMS);
@@ -108,41 +124,8 @@
 				sec = ("0" + sec);
 			}
 			$(this.selector).text(min + ":" + sec);
-		}	
+		}			
 		
-		this.toggle = function () {
-			if (this.countMS > 0) {
-				$('footer').fadeOut();	
-				if (this.countMS < this.durationMS) {		
-					if (this.status == 'paused') {
-						this.start();
-					} else {
-						this.pause();
-					}								
-				} else {			
-					this.start();							
-				}		
-			} else {
-				this.reset();	
-			}
-		}.bind(this);
-		
-		this.update_status = function (status) {
-			if (status) this.status = status;			
-			$(this.selector).css('background-color', colors[this.status]);    	      
-			this.save();
-		}
-	    
-	    this.start = function () {
-			this.update_status('on');    	
-	 		this.inter = setInterval(this.dec_counter.bind(this), 1000);
-	    }
-	    
-	    this.pause = function () {
-			this.update_status('paused');
-			clearInterval(this.inter);    
-	    }
-
 		// decrement the counter by 1 second	
 	    this.dec_counter = function () {
 	        if (this.countMS > 0) {
@@ -150,7 +133,7 @@
 		        this.display();
 		        this.save();
 	        } else {
-				this.done();
+				this.update_status('done');
 	        }
 	    }
 	    
@@ -163,18 +146,6 @@
 				systemTime : Date.now()	    		
 	    	}
 	    	store.set(this.id, settings);
-	    }
-	    
-	    this.done = function () {
-	        this.update_status('done');
-	   		clearInterval(this.inter);
-	    }	
-	    
-		if (store_obj) {
-			this.display();
-	    	if (this.status == "on") this.start();
-	    } else {
-	    	this.reset();
 	    }
 	    
 	    // time edit
@@ -191,7 +162,18 @@
 	    		this.reset(new_duration);
 	    	}
 	    }	    
-	    
+	    		
+		this.toggle = function () {
+			$('footer').fadeOut();
+			if (this.status == "done") {
+				this.reset();
+			} else if (this.status == "on") {
+				this.update_status('paused');
+			} else {
+				this.update_status('on');
+			}
+		}.bind(this);
+			    
 	    // dbl click handler
 	    this.dbl = function () {
 	    	if (this.status == "off") {
@@ -216,7 +198,12 @@
 			self.save();
 		});
 		
-		this.update_status();
+		// initialization
+		if (store_obj) {
+			this.update_status();
+	    } else {
+	    	this.reset();
+	    }
 
     }
     
