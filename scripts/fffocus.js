@@ -170,6 +170,13 @@
 			} else if (this.status == "on") {
 				this.update('paused');
 			} else {
+				// if the task is not set, ask for it
+				if (this.task() == defaults.task) {
+					if (new_task = prompt("What are you working on?", "")) {
+						if (new_task != "") this.task(new_task);
+					}
+				}
+				// start the timer
 				this.update('on');
 			}
 		}.bind(this);
