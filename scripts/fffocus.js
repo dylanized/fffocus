@@ -46,7 +46,7 @@
 
 	var colors = {
 		off 		: '#ccc',
-		on			: 'green',
+		on			: '#000',
 		paused		: '#ccc',
 		done		: 'orange'
 	}

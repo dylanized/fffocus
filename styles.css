@@ -76,15 +76,22 @@ footer {
 	width : 100%;
 }
 
+footer a {
+	transition: color 1s;
+	-moz-transition: color 1s; /* Firefox 4 */
+	-webkit-transition: color 1s; /* Safari and Chrome */
+	-o-transition: color 1s; /* Opera */
+}
+
 footer a:link,
 footer a:visited {	
-	color : #000;
+	color : #ccc;
 }
 
 footer a:hover,
 foooter a:active {
 	text-decoration : none;
-	color : green;
+	color : #000;
 }
 
 .control {
