@@ -17,7 +17,7 @@ More configuration options too:
 - Click the task at any time to edit it
 - Double click the button to reset the timer, then double click again to edit its duration
 - In the lower left corner of the page, there is a secret link to change the button color
-- Use a multi-browser setup? Point the secondary browser(s) to http://fffocus.com/blank
+- Use multiple browsers? Set your secondary browser(s) homepages to http://fffocus.com/blank
 
 Powered by:
 
