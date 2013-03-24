@@ -82,6 +82,8 @@
 		this.selector = "#" + this.id;		
 		this.dateObj = new Date(0, 0, 0, 0, 0, 0);
 		
+		this.dateObj.setTime(this.durationMS);
+		
 		this.reset = function () {
 			clearInterval(this.inter);
 			this.countMS = this.durationMS;
@@ -101,6 +103,9 @@
 			}
 			$(this.selector).text(min + ":" + sec);
 		}
+		
+		this.min = ko.observable(this.dateObj.getMinutes());
+		this.sec = ko.observable(this.dateObj.getSeconds());
 		
 		this.toggle = function () {
 			if (this.countMS > 0) {
@@ -155,7 +160,7 @@
 	    	store.set(this.id, settings);
 	    }
 	    
-	    this.done = function() {
+	    this.done = function () {
 	        this.update_status('done');
 	   		clearInterval(this.inter);
 	    }	
@@ -167,16 +172,33 @@
 	    	this.reset();
 	    }
 	    
-	    jQuery(this.selector).single_double_click(this.toggle, this.reset, 300);
+	    // time edit
+	    this.edit = function () {
+	    	// ask user for time
+	    	// intrepret time and set countMS
+	    	console.log('edit');
+	    }	    
+	    
+	    // dbl click handler
+	    this.dbl = function () {
+	    	if (this.status == "off") {
+	    		this.edit();
+	    	} else {
+	    		this.reset();
+	    	}
+	    }.bind(this);
+	    
+	    $(this.selector).single_double_click(this.toggle, this.dbl, 300);
 	    
 	    var self = this;
 
-		jQuery('#task').keyup(function() {
+		$('#task').keyup(function() {
 			self.save();
 		});  
 
-		jQuery('#task').blur(function() {
+		$('#task').blur(function() {
 			if (self.task() == "") self.task(default_settings.task);
+			self.save();
 		});
 	    
 	    this.new_duration = ko.observable(25);
@@ -185,7 +207,7 @@
     
 // launch page
 
-	$(document).ready(function() {    
+	jQuery(document).ready(function() {    
 	
 	    ko.applyBindings(new Timer('time'));	    
 	
