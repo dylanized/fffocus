@@ -189,7 +189,9 @@
 	    // cache this for jquery actions
 	    var self = this;
 
-		$('#task').keyup(function() {
+		$('#task').focus(function() {
+			if (self.task() == defaults.task) self.task('');
+		}).keyup(function() {
 			self.save();
 		}).blur(function() {
 			if (self.task() == "") self.task(defaults.task);
