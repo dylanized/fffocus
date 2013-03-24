@@ -53,14 +53,14 @@
 		this.reset = function (new_duration) {
 			if (new_duration) this.durationMS = new_duration;
 			this.countMS = this.durationMS;
-			this.update_status("off");
+			this.update("off");
 		}
 		
 		// interval timer
 		this.inter = false;
 		
 		// main controller function
-		this.update_status = function (status) {
+		this.update = function (status) {
 			if (status) this.status = status;
 			if (this.status == "on") {
 				if (this.inter == false) this.inter = setInterval(this.dec_counter.bind(this), 1000);
@@ -85,7 +85,7 @@
 		        this.display();
 		        this.save();
 	        } else {
-				this.update_status('done');
+				this.update('done');
 	        }
 	    }
 	    
@@ -122,9 +122,9 @@
 			if (this.status == "done") {
 				this.reset();
 			} else if (this.status == "on") {
-				this.update_status('paused');
+				this.update('paused');
 			} else {
-				this.update_status('on');
+				this.update('on');
 			}
 		}.bind(this);
 			    
@@ -152,7 +152,7 @@
 		
 		// initialization
 		if (store_obj) {
-			this.update_status();
+			this.update();
 	    } else {
 	    	this.reset();
 	    }
@@ -161,7 +161,7 @@
 			if (new_color = prompt("Set the timer color:", "green")) {
 				colors['on'] = new_color;
 				store.set('color', new_color);
-				self.update_status();
+				self.update();
 	    	}
 		});		
 	
