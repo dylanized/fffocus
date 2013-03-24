@@ -99,18 +99,20 @@
 	    // time edit
 	    this.edit = function () {
 	    	// ask user for time
-	    	var new_time = prompt("Set the timer duration:", "25:00");
-			// validate the input and reset the clock
-	    	var min_sec = new_time.split(":");
-	    	if (!isNaN(min_sec[0])) {
-	    		new_duration = min_sec[0] * 60 * 1000;
-	    		if (!isNaN(min_sec[1])) {
-	    			new_duration += min_sec[1] * 1000;
-	    		}
-	    		this.reset(new_duration);
+	    	if (new_time = prompt("Set the timer duration:", "25:00")) {
+				// validate the input and reset the clock
+		    	var min_sec = new_time.split(":");
+		    	if (!isNaN(min_sec[0])) {
+		    		new_duration = min_sec[0] * 60 * 1000;
+		    		if (!isNaN(min_sec[1])) {
+		    			new_duration += min_sec[1] * 1000;
+		    		}
+		    		this.reset(new_duration);
+		    	}
 	    	}
 	    }	    
 	    		
+	    // single click handler
 		this.toggle = function () {
 			$('footer').fadeOut();
 			if (this.status == "done") {
