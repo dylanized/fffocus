@@ -68,7 +68,6 @@
 				clearInterval(this.inter);
 				this.inter = false;
 			}
-			console.log(colors[this.status]);
 			$(this.selector).css('background-color', colors[this.status]);    	      
 			this.display();
 			this.save();
