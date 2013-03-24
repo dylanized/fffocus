@@ -8,4 +8,6 @@ A web pomodoro timer.
 - Click again to pause
 - Double click to reset
 
+http://fffocus.com
+
 Questions / Requests? d@dylanized.com  
