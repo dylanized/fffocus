@@ -168,7 +168,6 @@
 		this.toggle = function () {
 			$('#task').blur();
 			$('footer').fadeOut();
-			console.log('toggle started');
 			if (this.status == "done") {
 				this.reset();
 			} else if (this.status == "on") {
@@ -226,7 +225,6 @@
 	    	}
 		});			
 		$('#clear').click(function() {
-			console.log('clearing');
 			store.clear();
 		});		
 
