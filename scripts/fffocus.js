@@ -55,7 +55,7 @@
 		colors.on = store.get('color');
 	}
 	
-	var default_settings = {
+	var defaults = {
 		duration	: 25,	// in minutes
 		task		: "what are you doing?"
 	} 
@@ -70,7 +70,8 @@
 			var store_obj = store.get(id);	    	
 	    	this.status = store_obj.status;
  			this.durationMS = store_obj.durationMS;
- 			var task = store_obj.task; 			
+ 			var task = store_obj.task;
+ 			if (task == "") var task = defaults.task;			
     		// if it was running, subtract elabsed time
 	    	if (this.status == 'on') {
 	    		var elapsed_time = Date.now() - store_obj.systemTime;
@@ -80,8 +81,8 @@
 	    	}    		    				
 		} else {
 			// brand new thang
-			this.durationMS = default_settings.duration * 60 * 1000;
- 			var task = default_settings.task;			
+			this.durationMS = defaults.duration * 60 * 1000;
+ 			var task = defaults.task;			
 		}
     
 		this.id = id;
@@ -93,7 +94,7 @@
 		this.reset = function (new_duration) {
 			if (new_duration) this.durationMS = new_duration;
 			this.countMS = this.durationMS;
-			this.task(default_settings.task);
+			this.task(defaults.task);
 			$('footer').fadeIn();
 			this.update("off");
 		}
@@ -191,7 +192,7 @@
 		$('#task').keyup(function() {
 			self.save();
 		}).blur(function() {
-			if (self.task() == "") self.task(default_settings.task);
+			if (self.task() == "") self.task(defaults.task);
 			self.save();
 		});	
 		
