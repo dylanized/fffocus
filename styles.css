@@ -51,7 +51,8 @@ canvas {
 	-webkit-user-select: transparent;	
 	user-selct : transparent;
 	cursor : pointer;
-	letter-spacing : -1px;	
+	letter-spacing : -1px;
+	font-weight : normal;
 }
 
 #time {
@@ -88,11 +89,13 @@ foooter a:active {
 
 .control {
 	position : absolute;
-	left : 1em;
-	bottom : 1.5em;
+	left : 0;
+	bottom : 0;
+	padding : 1em;
 	color : #fff;
 	display : inline-block;
 	font-size : 1.2em;
+	cursor : pointer;
 }
 
 .control:hover {

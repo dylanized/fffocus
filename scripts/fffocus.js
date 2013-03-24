@@ -31,10 +31,6 @@
 	    	if (this.status == 'on') {
 	    		var elapsed_time = Date.now() - store_obj.systemTime;
 	    		this.countMS = store_obj.countMS - elapsed_time;
-	    		if (this.countMS <= 0) {
-	    			this.countMS = 0;
- 					this.status = done;
- 				}
 	    	} else {
 	    		this.countMS = store_obj.countMS;
 	    	}    		    				
@@ -61,7 +57,11 @@
 		
 		// main controller function
 		this.update = function (status) {
-			if (status) this.status = status;
+    		if (this.countMS <= 0) {
+    			this.countMS = 0;
+				status = 'done';
+			}	
+			if (status) this.status = status;			
 			if (this.status == "on") {
 				if (this.inter == false) this.inter = setInterval(this.dec_counter.bind(this), 1000);
 			} else {
@@ -147,7 +147,7 @@
 		}).blur(function() {
 			if (self.task() == "") self.task(default_settings.task);
 			self.save();
-		});
+		});	
 		
 		// initialization
 		if (store_obj) {
