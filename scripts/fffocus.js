@@ -153,6 +153,9 @@
 	    }
 	    
 	    $(this.selector).single_double_click(this.toggle, this.reset, 300);
+	    
+	    this.task = ko.observable('what are you doing?');
+	    this.new_duration = ko.observable(25);
 
     }
     
@@ -160,4 +163,5 @@
 
 	$(document).ready(function() {		
 	    timer = new Timer('time');		
-	});
+	});		
+			
