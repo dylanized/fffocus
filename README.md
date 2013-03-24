@@ -17,7 +17,11 @@ More configuration options too:
 - Double click to reset, then double click again to edit the timer duration
 - In the lower left corner of the page, there is a secret button to change the button color
 
-This is just a static html page with object-oriented Javascript, using Knockout.js, HTML5 local store, and some other goodies. Desktop only for now.
+Made with the help of:
+
+- http://knockoutjs.com/
+- https://github.com/marcuswestin/store.js/
+- http://momentjs.com/
 
 Happy fffocusing!
 
