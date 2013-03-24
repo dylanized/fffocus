@@ -210,7 +210,7 @@
 		});	
 		
 		// initialization
-		if (store_obj) {
+		if (store_obj && (this.status != 'done')) {
 			this.update();
 	    } else {
 	    	this.reset();
