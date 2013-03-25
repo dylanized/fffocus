@@ -123,6 +123,11 @@
 		
 		this.display = function () {
 			$(this.selector).text(moment(this.countMS).format('m:ss'));
+			if (this.status == 'on' || this.status == 'paused') {
+				$('title').text("fffocus - " + moment(this.countMS).format('m:ss'));
+			} else {
+				$('title').text("fffocus");
+			}
 		}			
 		
 		// decrement the counter by 1 second	
