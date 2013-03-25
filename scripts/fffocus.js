@@ -67,7 +67,6 @@
     
     	this.countMS = ko.observable();
     	this.status = ko.observable();
-	    this.task = ko.observable(task);    	
     	    
 		if (store.get(id)) {
 			// resume from local store
@@ -89,7 +88,9 @@
  			var task = defaults.task;			
 		}
     
-		this.id = id;    
+		this.id = id;
+    
+	    this.task = ko.observable(task);
 	    		
 		this.selector = "#" + this.id;		
 	
