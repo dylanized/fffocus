@@ -64,20 +64,23 @@
 
 	// constructor func
     Timer = function(id) {
+    
+    	this.countMS = ko.observable();
+    	this.status = ko.observable();
     	    
 		if (store.get(id)) {
 			// resume from local store
 			var store_obj = store.get(id);	    	
-	    	this.status = store_obj.status;
+	    	this.status(store_obj.status);
  			this.durationMS = store_obj.durationMS;
  			var task = store_obj.task;
  			if (task == "") var task = defaults.task;			
     		// if it was running, subtract elabsed time
-	    	if (this.status == 'on') {
+	    	if (this.status() == 'on') {
 	    		var elapsed_time = Date.now() - store_obj.systemTime;
-	    		this.countMS = store_obj.countMS - elapsed_time;
+	    		this.countMS(store_obj.countMS - elapsed_time);
 	    	} else {
-	    		this.countMS = store_obj.countMS;
+	    		this.countMS(store_obj.countMS);
 	    	}    		    				
 		} else {
 			// brand new thang
@@ -93,7 +96,7 @@
 	
 		this.reset = function (new_duration) {
 			if (new_duration) this.durationMS = new_duration;
-			this.countMS = this.durationMS;
+			this.countMS(this.durationMS);
 			this.task(defaults.task);
 			$('#task').blur();
 			$('footer').fadeIn();
@@ -105,36 +108,37 @@
 		
 		// main controller function
 		this.update = function (status) {
-    		if (this.countMS <= 0) {
-    			this.countMS = 0;
+    		if (this.countMS() <= 0) {
+    			this.countMS(0);
 				status = 'done';
 			}	
-			if (status) this.status = status;			
-			if (this.status == "on") {
+			if (status) this.status(status);
+			if (this.status() == "on") {
 				if (this.inter == false) this.inter = setInterval(this.dec_counter.bind(this), 1000);
 			} else {
 				clearInterval(this.inter);
 				this.inter = false;
 			}
-			$(this.selector).css('background-color', colors[this.status]);    	      
-			this.display();
+			$(this.selector).css('background-color', colors[this.status()]);    	      
 			this.save();
 		}
-		
-		this.display = function () {
-			$(this.selector).text(moment(this.countMS).format('m:ss'));
-			if (this.status == 'on' || this.status == 'paused') {
-				$('title').text("fffocus - " + moment(this.countMS).format('m:ss'));
+			    
+	    // formatted duration
+		this.duration = ko.computed(function() {
+			var formatted = moment(this.countMS()).format('m:ss');
+			if (this.status() == 'on' || this.status() == 'paused') {
+				$('title').text("fffocus " + formatted);
 			} else {
 				$('title').text("fffocus");
-			}
-		}			
+			}		
+			return formatted;
+		}, this);			
 		
 		// decrement the counter by 1 second	
 	    this.dec_counter = function () {
-	        if (this.countMS > 0) {
-				this.countMS -= 1000;
-		        this.display();
+	        if (this.countMS() > 0) {
+	        	var new_count = this.countMS() - 1000;
+				this.countMS(new_count);
 		        this.save();
 	        } else {
 				this.update('done');
@@ -145,8 +149,8 @@
 	    this.save = function () {
 	    	var settings = {
 	    		task : this.task(),
-	    		countMS : this.countMS,
-	    		status : this.status,
+	    		countMS : this.countMS(),
+	    		status : this.status(),
 	    		durationMS : this.durationMS,
 				systemTime : Date.now()	    		
 	    	}
@@ -173,13 +177,13 @@
 		this.toggle = function () {
 			$('#task').blur();
 			$('footer').fadeOut();
-			if (this.status == "done") {
+			if (this.status() == "done") {
 				this.reset();
-			} else if (this.status == "on") {
+			} else if (this.status() == "on") {
 				this.update('paused');
 			} else {
 				// if the task is not set, ask for it	
-				if (this.status == "off" && this.task() == defaults.task) {
+				if (this.status() == "off" && this.task() == defaults.task) {
 					if (new_task = prompt(defaults.task, "")) {
 						if (new_task.length > 0) this.task(new_task);
 					}
@@ -191,7 +195,7 @@
 			    
 	    // dbl click handler
 	    this.dbl = function () {
-	    	if (this.status == "off") {
+	    	if (this.status() == "off") {
 	    		this.edit();
 	    	} else {
 	    		this.reset();
@@ -202,7 +206,7 @@
 	    $(this.selector).single_double_click(this.toggle, this.dbl, 300);
 	    
 	    // cache this for jquery actions
-	    var self = this;
+	    var self = this;    
 
 		// editable task behavior
 		$('#task').focus(function() {
@@ -215,7 +219,7 @@
 		});	
 		
 		// initialization
-		if (store_obj && (this.status != 'done')) {
+		if (store_obj && (this.status() != 'done')) {
 			this.update();
 	    } else {
 	    	this.reset();
