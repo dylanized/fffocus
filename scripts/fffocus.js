@@ -41,7 +41,20 @@
 		    });
 		  });
 		}
-	
+		
+/* sound effects helper */		
+			
+	function play_sound(sound_file) {
+		function supportsAudio () {
+		    var a = document.createElement('audio'); 
+		    return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''));
+		}
+		if (supportsAudio()) {
+			var snd = new Audio(sound_file); // buffers automatically when created
+			snd.play();
+		}
+	}
+
 // session config
 
 	var colors = {
@@ -111,6 +124,7 @@
     		if (this.countMS() <= 0) {
     			this.countMS(0);
 				status = 'done';
+				play_sound("sounds/notify.wav");				
 			}	
 			if (status) this.status(status);
 			if (this.status() == "on") {
