@@ -67,6 +67,7 @@
     
     	this.countMS = ko.observable();
     	this.status = ko.observable();
+	    this.task = ko.observable(task);    	
     	    
 		if (store.get(id)) {
 			// resume from local store
@@ -88,9 +89,7 @@
  			var task = defaults.task;			
 		}
     
-		this.id = id;
-    
-	    this.task = ko.observable(task);
+		this.id = id;    
 	    		
 		this.selector = "#" + this.id;		
 	
@@ -127,7 +126,7 @@
 		this.duration = ko.computed(function() {
 			var formatted = moment(this.countMS()).format('m:ss');
 			if (this.status() == 'on' || this.status() == 'paused') {
-				$('title').text("fffocus " + formatted);
+				$('title').text(formatted + " " + this.task());
 			} else {
 				$('title').text("fffocus");
 			}		
