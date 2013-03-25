@@ -128,11 +128,9 @@
 			var formatted = moment(this.countMS()).format('m:ss');
 			if (this.status() == 'on' || this.status() == 'paused') {
 				$('title').text(formatted + " " + this.task());
-			} else {
-				$('title').text("fffocus");
-			}		
+			}
 			return formatted;
-		}, this);			
+		}, this);
 		
 		// decrement the counter by 1 second	
 	    this.dec_counter = function () {
