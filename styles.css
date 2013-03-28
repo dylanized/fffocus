@@ -98,7 +98,7 @@ foooter a:active {
 	position : absolute;
 	left : 0;
 	bottom : 0;
-	padding : 1em;
+	padding : 1.5em;
 	color : #fff;
 	display : inline-block;
 	font-size : 1.2em;
@@ -120,3 +120,17 @@ foooter a:active {
 	left : auto;
 	right : 1em;
 }
+
+/* mobile overrides */
+		
+	/* tablet */	
+	@media handheld, only screen and (max-width: 800px) {
+		#task {
+			font-size : 15px !important;
+		}
+		footer  { display : none; }
+	}
+	/* phone */	
+	@media handheld, only screen and (max-width: 400px) {	
+	
+	}

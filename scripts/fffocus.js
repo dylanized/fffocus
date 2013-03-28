@@ -234,13 +234,14 @@
 	    		this.reset();
 	    	}
 	    }.bind(this);
+	    	    
+	    // cache this for jquery callbacks
+	    var self = this; 	    
 	    
-	    // bind custom function
-	    $(this.selector).single_double_click(this.toggle, this.dbl, 300);
-	    
-	    // cache this for jquery actions
-	    var self = this;    
-
+	    // bind click, dbl click and mobile tap+hold fuevents
+	    $(this.selector).single_double_click(this.toggle, this.dbl, 300)
+	    	.hammer().on("hold", this.dbl);
+   
 		// editable task behavior
 		$('#task').focus(function() {
 			if (self.task() == defaults.task) self.task('');
