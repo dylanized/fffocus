@@ -42,13 +42,14 @@
 		  });
 		}
 		
-/* sound effects helper */		
+	// sound effects helper
 			
+	function supportsAudio () {
+	    var a = document.createElement('audio'); 
+	    return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''));
+	}
+
 	function play_sound(sound_file) {
-		function supportsAudio () {
-		    var a = document.createElement('audio'); 
-		    return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''));
-		}
 		if (supportsAudio()) {
 			var snd = new Audio(sound_file); // buffers automatically when created
 			snd.play();
@@ -94,11 +95,13 @@
 	    		this.countMS(store_obj.countMS - elapsed_time);
 	    	} else {
 	    		this.countMS(store_obj.countMS);
-	    	}    		    				
+	    	}
+	    	this.tick_pref = store_obj.tickPref;   		    				
 		} else {
 			// brand new thang
 			this.durationMS = defaults.duration * 60 * 1000;
  			var task = defaults.task;			
+ 			this.tick_pref = false;
 		}
     
 		this.id = id;
@@ -117,7 +120,7 @@
 		}
 		
 		// interval timer
-		this.inter = false;
+		this.inter = false;				
 		
 		// main controller function
 		this.update = function (status) {
@@ -129,14 +132,31 @@
 			if (status) this.status(status);
 			if (this.status() == "on") {
 				if (this.inter == false) this.inter = setInterval(this.dec_counter.bind(this), 1000);
+				this.update_tick(true);
 			} else {
 				clearInterval(this.inter);
 				this.inter = false;
+				this.update_tick(false);
 			}
 			$(this.selector).css('background-color', colors[this.status()]);    	      
 			this.save();
+		}		
+		
+		if (supportsAudio()) {		
+			this.tick = new Audio('sounds/ticking.wav');
+			this.tick.loop = true;				
 		}
-			    
+							
+		this.update_tick = function(tick_status) {
+			if (supportsAudio()) {
+				if (this.tick_pref && tick_status) {
+				    this.tick.play();
+				} else {
+					this.tick.pause();
+				}
+			}
+		}				
+					    
 	    // formatted duration
 		this.duration = ko.computed(function() {
 			var formatted = moment(this.countMS()).format('m:ss');
@@ -164,7 +184,8 @@
 	    		countMS : this.countMS(),
 	    		status : this.status(),
 	    		durationMS : this.durationMS,
-				systemTime : Date.now()	    		
+				systemTime : Date.now(),
+				tickPref : this.tick_pref    		
 	    	}
 	    	store.set(this.id, settings);
 	    }
@@ -249,7 +270,10 @@
 			self.reset();
 			store.clear();
 		});		
-
+		$('#ticking').click(function() {
+			self.tick_pref = !(self.tick_pref);
+			self.update();
+		});
     }
     
 // launch timer

@@ -109,6 +109,13 @@ foooter a:active {
 	color : #ccc;
 }
 
+.top-control {
+	bottom : auto;
+	left : auto;
+	top : 0;
+	right : 0;
+}
+
 #clear {
 	left : auto;
 	right : 1em;
